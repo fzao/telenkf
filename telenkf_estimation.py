@@ -83,7 +83,7 @@ class ModelTelemac2D:
 
     def Run(self, K, State):
         """
-        Simulateur HX
+        HX operator
         """
         # Set time info (for re-start)
         self.t2d.set("MODEL.LT", self.LT)
