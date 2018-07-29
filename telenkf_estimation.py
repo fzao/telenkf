@@ -44,6 +44,7 @@ Auteur(s): Fabrice Zaoui
 Copyright (c) EDF 2018
 """
 
+from __future__ import print_function
 import numpy as np
 import os
 from matplotlib import pyplot as plt
@@ -140,9 +141,18 @@ if __name__ == '__main__':
     etude = ModelTelemac2D(studyFiles, fobs)
     # EnKF initialization
     nparam = 1  # Number of parameters to estimate
-    KS = 60.  # Background solution
+    # Background solution
+    KS = raw_input("Choose an initial background value in the range [10, 100]"
+                   " for the Strickler's coefficient [10, 100]: ")
+    try:
+        KS = int(KS)
+    except ValueError:
+        print("Invalid value for KS")
+    if KS < 10. or KS > 100.:
+        print('KS is not in the range [10, 100]')
+        exit()
     Param0 = np.array([KS])
-    KsOPT = 35.  # Optimal value the plotting part
+    KsOPT = 35.  # Optimal value for the plotting part
     # Number of members of the ensemble
     Ne = 5
     # States of each member
@@ -222,6 +232,7 @@ if __name__ == '__main__':
     # plot the convergence for the paramter (Strickler friction coefficient)
     plt.plot(np.asarray(result_EnKF), label='EnKF convergence')
     plt.axhline(y=KsOPT, color='r', linestyle='-', label='Optimal solution')
+    plt.plot(KS, color='steelblue', marker='o', markersize=10)
     plt.legend()
     plt.grid()
     plt.xlabel('Assimilation cycle')
