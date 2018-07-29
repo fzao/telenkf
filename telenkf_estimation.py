@@ -49,6 +49,7 @@ import numpy as np
 import os
 from matplotlib import pyplot as plt
 from pathos.multiprocessing import ProcessingPool as Pool
+from pathos.multiprocessing import cpu_count
 from TelApy.api.t2d import Telemac2d
 from mpi4py import MPI
 from numpy.random import multivariate_normal
@@ -182,7 +183,7 @@ if __name__ == '__main__':
     AT = 0.0
     k = 1
     # Parallelism
-    nproc = 4
+    nproc = cpu_count() - 1
     pool = Pool(nodes=nproc)
     # Data assimilation cycle loop
     while True:
