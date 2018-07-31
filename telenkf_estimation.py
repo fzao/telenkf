@@ -183,7 +183,7 @@ if __name__ == '__main__':
     AT = 0.0
     k = 1
     # Parallelism
-    nproc = cpu_count() - 1
+    nproc = max(1, cpu_count() - 1)
     pool = Pool(nodes=nproc)
     # Data assimilation cycle loop
     while True:
