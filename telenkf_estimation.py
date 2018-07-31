@@ -143,19 +143,26 @@ if __name__ == '__main__':
     # EnKF initialization
     nparam = 1  # Number of parameters to estimate
     # Background solution
-    KS = raw_input("Choose an initial background value in the range [10, 100]"
-                   " for the Strickler's coefficient [10, 100]: ")
+    KS = raw_input("Choose an initial background value in the range"
+                   " [10., 100.] for the Strickler's coefficient : ")
     try:
-        KS = int(KS)
+        KS = float(KS)
     except ValueError:
         print("Invalid value for KS")
     if KS < 10. or KS > 100.:
-        print('KS is not in the range [10, 100]')
+        print('KS is not in the range [10., 100.]')
         exit()
     Param0 = np.array([KS])
     KsOPT = 35.  # Optimal value for the plotting part
     # Number of members of the ensemble
-    Ne = 5
+    Ne = raw_input("Choose a number of members for the ensemble: ")
+    try:
+        Ne = int(Ne)
+    except ValueError:
+        print("Invalid value for Ne")
+    if Ne < 2:
+        print('Ne must be greater than 1')
+        exit()
     # States of each member
     State_Ensemble = np.zeros((Ne, 3, etude.npoin))
     State_Ensemble[:, 0, :] = etude.new_state[0]
