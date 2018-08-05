@@ -1,10 +1,18 @@
-Ensemble Kalman Filter Example for TELEMAC-MASCARET
+=Ensemble Kalman Filter Example for TELEMAC-MASCARET
 ===================================================
 
 Ensemble Kalman Filtering example with the Telemac 2D hydrodynamic code
 
 This is a twin experiment based on the 'Estimation' test case where the goal
     is to estimate the bottom friction coefficient
+
+<p align="center">
+  <img src="./doc/enk.gif" width="800"/>
+</p>
+<p align="center">
+   <b>Example of convergence for Ne=10 and Ks_initial_value = 20</b> 
+</p>
+
 
 This Python script uses:
 * EnKF algorithm from the 'filterpy' module (http://github.com/rlabbe/filterpy)
