@@ -1,4 +1,4 @@
-=Ensemble Kalman Filter Example for TELEMAC-MASCARET
+Ensemble Kalman Filter Example for TELEMAC-MASCARET
 ===================================================
 
 Ensemble Kalman Filtering example with the Telemac 2D hydrodynamic code
