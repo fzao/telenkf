@@ -101,6 +101,9 @@ class ModelTelemac2D:
             if ierr:
                 print('Error with Telemac 2D!')
                 break
+        # Save new info on times
+        self.LT = self.t2d.get("MODEL.LT")
+        self.AT = self.t2d.get("MODEL.AT")
         # Return the new hydraulic state
         return self.t2d.get_state()
 
@@ -202,9 +205,6 @@ if __name__ == '__main__':
             Y[i, 0] = State_Ensemble[i, 0, point_obs]
             Y[i, 1] = State_Ensemble[i, 1, point_obs]
             Y[i, 2] = State_Ensemble[i, 2, point_obs]
-        # Save new info on times
-        study.LT = study.t2d.get("MODEL.LT")
-        study.AT = study.t2d.get("MODEL.AT")
         # Noise of the model
         Ensemble[:, :] += multivariate_normal([0]*nparam, Q, Ne)
         # Mean of the model results
