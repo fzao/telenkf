@@ -146,8 +146,8 @@ if __name__ == '__main__':
         KS = float(KS)
     except ValueError:
         print("Invalid value for KS")
-    if KS < 10. or KS > 100.:
-        print('KS is not in the range [10., 100.]')
+    if KS < 10. or KS > 90.:
+        print('KS is not in the range [10., 90.]')
         exit()
     Param0 = np.array([KS])
     KsOPT = 35.  # Optimal value for the plotting part
