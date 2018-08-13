@@ -114,7 +114,7 @@ def simulT2D(Param, Etat):
     not pickable with Python built-in parallelism
     """
     K = Param[0]
-    state = etude.Run(K, Etat)
+    state = study.Run(K, Etat)
     return state
 
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                   'f2d.slf': 'f2d_estimation.slf',
                   't2d.geo': 'geo_estimation.slf'}
     # Class Instantiation
-    etude = ModelTelemac2D(studyFiles, fobs)
+    study = ModelTelemac2D(studyFiles, fobs)
     # EnKF initialization
     nparam = 1  # Number of parameters to estimate
     # Background solution
@@ -164,10 +164,10 @@ if __name__ == '__main__':
         print('Ne must be greater than 1')
         exit()
     # States of each member
-    State_Ensemble = np.zeros((Ne, 3, etude.npoin))
-    State_Ensemble[:, 0, :] = etude.new_state[0]
-    State_Ensemble[:, 1, :] = etude.new_state[1]
-    State_Ensemble[:, 2, :] = etude.new_state[2]
+    State_Ensemble = np.zeros((Ne, 3, study.npoin))
+    State_Ensemble[:, 0, :] = study.new_state[0]
+    State_Ensemble[:, 1, :] = study.new_state[1]
+    State_Ensemble[:, 2, :] = study.new_state[2]
     # Covariance for the initial draw
     P = np.diag([1])
     # Draw
@@ -250,5 +250,5 @@ if __name__ == '__main__':
     # Ending
     pool.terminate()
     pool.join()
-    del(etude.t2d)
+    del(study.t2d)
     os.chdir(CURDIR)
