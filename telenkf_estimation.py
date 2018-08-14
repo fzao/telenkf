@@ -236,7 +236,8 @@ if __name__ == '__main__':
     plt.plot(np.asarray(result_EnKF), label='EnKF convergence')
     plt.axhline(y=KsOPT, color='r', linestyle='-', label='Optimal solution')
     plt.plot(KS, color='steelblue', marker='o', markersize=10)
-    plt.legend()
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=2, mode="expand", borderaxespad=0.)
     plt.grid()
     plt.xlabel('Assimilation cycle')
     plt.ylabel('Strickler coefficient m1/3/s')
