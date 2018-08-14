@@ -77,19 +77,17 @@ class ModelTelemac2D:
         self.npoin = self.t2d.get('MODEL.NPOIN')
         # Final simulation time
         self.final_time = self.t2d.get("MODEL.NTIMESTEPS")
-        # AT and LT info variables on time
+        # Test Telemac for one time step
         self.AT = self.t2d.get("MODEL.AT")
         self.LT = self.t2d.get("MODEL.LT")
-        # Test Telemac for one time step
         self.t2d.run_one_time_step()
+        self.t2d.set("MODEL.LT", self.LT)
+        self.t2d.set("MODEL.AT", self.AT)
 
     def Run(self, K, State):
         """
         HX operator
         """
-        # Set time info (for re-start)
-        self.t2d.set("MODEL.LT", self.LT)
-        self.t2d.set("MODEL.AT", self.AT)
         # Set the new values for the friction parameter and for all the nodes
         for j in range(self.npoin):
             self.t2d.set('MODEL.CHESTR', K, j)
@@ -101,9 +99,6 @@ class ModelTelemac2D:
             if ierr:
                 print('Error with Telemac 2D!')
                 break
-        # Save new info on times
-        self.LT = self.t2d.get("MODEL.LT")
-        self.AT = self.t2d.get("MODEL.AT")
         # Return the new hydraulic state
         return self.t2d.get_state()
 
