@@ -120,7 +120,7 @@ if __name__ == '__main__':
     Obs = Obs.transpose()
     # Observation point (it is in the middle of the domain)
     point_obs = 152
-    # Frequency of observations
+    # Frequency of observations (in number of time steps)
     fobs = 100
     # Number of observations
     ndata = Obs.shape[0]
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     nparam = 1  # Number of parameters to estimate
     # Background solution
     KS = raw_input("Choose an initial background value in the range"
-                   " [10., 100.] for the Strickler's coefficient : ")
+                   " [10., 90.] for the Strickler's coefficient : ")
     try:
         KS = float(KS)
     except ValueError:
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     plt.axhline(y=KsOPT, color='r', linestyle='-', label='Optimal solution')
     plt.plot(KS, color='steelblue', marker='o', markersize=10)
     plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-           ncol=2, mode="expand", borderaxespad=0.)
+               ncol=2, mode="expand", borderaxespad=0.)
     plt.grid()
     plt.xlabel('Assimilation cycle')
     plt.ylabel('Strickler coefficient m1/3/s')
