@@ -39,7 +39,7 @@ This Python script uses:
         TELEMAC-MASCARET System", 24th Telemac-Mascaret User Conference,
         Graz, Austria, 2017, pp. 57-64
 
-Auteur(s): Fabrice Zaoui
+Author(s): Fabrice Zaoui
 
 Copyright (c) EDF 2018
 """
