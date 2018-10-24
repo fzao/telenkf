@@ -189,9 +189,13 @@ if __name__ == '__main__':
     pool = Pool(nodes=nproc)
     # Data assimilation cycle loop
     while True:
+        # Print the representative mean value of the Ensemble
         print(np.mean(Ensemble))
+        # Save this value for the plotting of the convergence
         result_EnKF.append(np.mean(Ensemble))
+        # Compute each memeber with Telemac in parallel with the Pathos module
         new_state = pool.map(simulT2D, Ensemble, State_Ensemble)
+        # Saving the state of each member
         for i in range(Ne):
             State_Ensemble[i, 0, :] = new_state[i][0]
             State_Ensemble[i, 1, :] = new_state[i][1]
@@ -232,7 +236,7 @@ if __name__ == '__main__':
             k = k + 1
         else:
             break
-    # plot the convergence for the paramter (Strickler friction coefficient)
+    # plot the convergence for the parameter (Strickler friction coefficient)
     plt.plot(np.asarray(result_EnKF), label='EnKF convergence')
     plt.axhline(y=KsOPT, color='r', linestyle='-', label='Optimal solution')
     plt.plot(KS, color='steelblue', marker='o', markersize=10)
