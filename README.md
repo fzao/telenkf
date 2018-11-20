@@ -34,6 +34,8 @@ This package is provided under the MIT license
 References
 ==========
 
+- [F. Zaoui, C. Goeury, Y. Audouin. "Ensemble Integrations of Telemac-Mascaret for the optimal model calibration"](https://hal.archives-ouvertes.fr/hal-01908756)
+
 - John L Crassidis and John L. Junkins. "Optimal Estimation of
 Dynamic Systems", CRC Press, second edition. 2012. pp, 257-9
 
