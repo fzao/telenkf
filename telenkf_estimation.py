@@ -193,7 +193,7 @@ if __name__ == '__main__':
         print(np.mean(Ensemble))
         # Save this value for the plotting of the convergence
         result_EnKF.append(np.mean(Ensemble))
-        # Compute each memeber with Telemac in parallel with the Pathos module
+        # Compute each member with Telemac in parallel with the Pathos module
         new_state = pool.map(simulT2D, Ensemble, State_Ensemble)
         # Saving the state of each member
         for i in range(Ne):
