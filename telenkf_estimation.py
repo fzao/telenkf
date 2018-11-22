@@ -105,7 +105,7 @@ class ModelTelemac2D:
 
 def simulT2D(Param, Etat):
     """
-    A calling sequence for ModelTelemac2D.simulT2D() as Fortran objects are
+    A calling sequence for ModelTelemac2D.Run() as Fortran objects are
     not pickable with Python built-in parallelism
     """
     K = Param[0]
