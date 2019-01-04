@@ -10,8 +10,18 @@ This is a twin experiment based on the 'Estimation' test case where the goal
   <img src="./doc/enk.gif" width="800"/>
 </p>
 <p align="center">
-   <b>Example of convergence for Ne=10 and Ks_initial_value = 20</b> 
+   <b>Example of convergence for Ne=10 and Ks_initial_value = 20</b>
 </p>
+
+The 3 scripts contain:
+* telenkf_t2d_estimation_python2_pathos.py
+  Python 2 version of the script Telemac 2D in sequential but the runs are mutlithreaded with pathos.
+* telenkf_t2d_estimation_python3_pathos.py
+  Same as before but Python 3 compatible.
+* telenkf_t2d_estimation_python3_mpi.py
+  Python 3 version of the script with the Telemac 2D study that can run in
+  parallel (mpirun -n X python3 telenkf_t2d_estimation_python3.py to run the script with
+  Telemac 2D running on X cores) but the EnKF in sequential
 
 
 This Python script uses:
@@ -19,12 +29,15 @@ This Python script uses:
 
 * TelApy a set of Python API for the Telemac-Mascaret system
 
+* Mpi4py to use MPI in Python
+
 Requirements
 ============
 
 - NumPy
 - Matplotlib
 - Pathos
+- Mpi4py
 
 License
 =======
