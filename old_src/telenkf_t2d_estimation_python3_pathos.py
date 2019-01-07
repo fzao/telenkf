@@ -140,7 +140,7 @@ if __name__ == '__main__':
     nparam = 1  # Number of parameters to estimate
     # Background solution
     KS = input("Choose an initial background value in the range"
-                   " [10., 90.] for the Strickler's coefficient : ")
+               " [10., 90.] for the Strickler's coefficient : ")
     try:
         KS = float(KS)
     except ValueError:
