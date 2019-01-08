@@ -23,7 +23,7 @@ This Python script uses:
 Requirements
 ============
 
-- Ptyhon 3 (requires Telemac v8p0 or above)
+- Python 3 (requires Telemac v8p0 or above)
 - NumPy
 - Matplotlib
 - Mpi4py
