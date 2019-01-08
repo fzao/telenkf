@@ -28,6 +28,12 @@ Requirements
 - Matplotlib
 - Mpi4py
 
+Use
+===
+
+For a parallel run with 4 processes:
+`mpirun -np 4 python3 telenkf_t2d_estimation.py`
+
 License
 =======
 
