@@ -260,7 +260,7 @@ def main():
             Y[i, 2] = study.t2d.get('MODEL.VELOCITYV', i=point_obs,
                                     global_num=True)
 
-        # Extraction of observation info
+        # Terminate with ntps when no more observations
         ntps = k * fobs
 
         if rank == 0:
