@@ -52,43 +52,6 @@ from matplotlib import pyplot as plt
 from mpi4py import MPI
 from scipy.linalg import inv
 
-# def AllGathervPy(comm, X, NumTab):
-#     """
-#     Merge data from X following order of NumTab
-#
-#     @param X (np.Array) Values to be merge
-#     @param NumTab (np.Array) List of index
-#     """
-#     comm.Barrier()
-#     ncsize = comm.Get_size()
-#     rank = comm.Get_rank()
-#     # Global number of values
-#     dimXtot = np.array([0])
-#     # Counting number of values on each processor
-#     comm.Allreduce(np.array([len(X)]), dimXtot, op=MPI.SUM)
-#     Xtot = np.zeros(dimXtot)
-#     Y = np.zeros(dimXtot)
-#     IndiceTot = np.zeros(dimXtot,dtype=int)
-#     Indice = np.zeros(len(X),dtype=np.int)
-#     # creation des tableaux counts and shifts
-#     counts = np.zeros(ncsize,dtype=np.int)
-#     shift  = np.zeros(ncsize,dtype=np.int)
-#     comm.Allgather([np.array([len(Indice)],dtype=np.int),MPI.DOUBLE],[counts,MPI.DOUBLE])
-#     shift[0]=0
-#     for i in range(1,ncsize):
-#         shift[i]=shift[i-1]+counts[i-1]
-#         if len(X)>0:
-#             for l in range(len(X)):
-#                  Indice[l] = NumTab[l]
-#     comm.Allgatherv([Indice,counts[rank],MPI.DOUBLE],[IndiceTot,counts,shift,MPI.DOUBLE])
-#     IndiceTot = sorted(IndiceTot.tolist())
-#     for i in range(len(X)):
-#         Xtot[IndiceTot.index(Indice[i])]=X[i]
-#     comm.Allreduce(Xtot,Y, op=MPI.SUM)
-#
-#     return Y.tolist()
-
-
 class ModelTelemac2D(object):
 
     def __init__(self, studyFiles, fobs):
@@ -111,12 +74,6 @@ class ModelTelemac2D(object):
         self.npoin = self.t2d.get('MODEL.NPOIN')
         # Final simulation time
         self.final_time = self.t2d.get("MODEL.NTIMESTEPS")
-        # Test Telemac for one time step
-        self.AT = self.t2d.get("MODEL.AT")
-        self.LT = self.t2d.get("MODEL.LT")
-        self.t2d.run_one_time_step()
-        self.t2d.set("MODEL.LT", self.LT)
-        self.t2d.set("MODEL.AT", self.AT)
 
     def Run(self, K, State):
         """
