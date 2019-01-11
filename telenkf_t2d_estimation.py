@@ -123,8 +123,8 @@ class ModelTelemac2D(object):
         HX operator
         """
         # Set the new values for the friction parameter and for all the nodes
-        for j in range(self.npoin):
-            self.t2d.set('MODEL.CHESTR', K, j)
+        K_array = np.ones(self.npoin) * K
+        self.t2d.set_array('MODEL.CHESTR', K_array)
         # Set the correct initial state corresponding to a particular member
         self.t2d.set_state(State[0], State[1], State[2])
         # Compute telemac2d
