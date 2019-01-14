@@ -10,7 +10,7 @@ This is a twin experiment based on the 'Estimation' test case where the goal
   <img src="./doc/enk.gif" width="800"/>
 </p>
 <p align="center">
-   <b>Example of convergence for Ne=10 and Ks_initial_value = 20</b>
+   <b>Example of T2D convergence for Ne=10 and Ks_initial_value = 20</b>
 </p>
 
 This Python script uses:
@@ -32,7 +32,8 @@ Use
 ===
 
 For a parallel run with 4 processes:
-`mpirun -np 4 python3 telenkf_t2d_estimation.py`
+- `mpirun -np 4 python3 telenkf_t2d_estimation.py`
+- `mpirun -np 4 python3 telenkf_masc_test1.py`
 
 License
 =======
