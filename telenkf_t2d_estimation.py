@@ -43,7 +43,6 @@ Author(s): Fabrice Zaoui, Yoann Audouin, Cedric Goeury
 
 Copyright (c) EDF 2018-2019
 """
-
 from telapy.api.t2d import Telemac2d
 import os
 import numpy as np
@@ -54,13 +53,13 @@ from scipy.linalg import inv
 
 class ModelTelemac2D(object):
 
-    def __init__(self, studyFiles, fobs):
+    def __init__(self, studyFiles, fobs, comm=MPI.COMM_SELF):
         """
         Instantiation
         """
         self.t2d = Telemac2d(studyFiles['t2d.cas'],
                              user_fortran=studyFiles['t2d.f'],
-                             comm=MPI.COMM_SELF,
+                             comm=comm,
                              stdout=0)
         # Read the steering file
         self.t2d.set_case()
@@ -98,9 +97,25 @@ def main():
     """
     Main function
     """
-    comm = MPI.COMM_WORLD
+    gbl_comm = MPI.COMM_WORLD
+    gbl_rank = gbl_comm.Get_rank()
+    gbl_ncsize = gbl_comm.Get_size()
+    ncsize_run = 2
+    # Checking consitensy of parallel information
+    if gbl_ncsize%ncsize_run != 0:
+        print("Number of cores for a telemac run must divide the total number of cores")
+        print("Total number of cores:",gbl_ncsize)
+        print("Telemac run number of cores:",ncsize_run)
+        raise ValueError
+    # Creating local communicator
+    color = gbl_rank//ncsize_run
+    key = gbl_rank - (color*ncsize_run)
+    comm = gbl_comm.Split(color, key)
     rank = comm.Get_rank()
     ncsize = comm.Get_size()
+    niter = gbl_ncsize//ncsize_run
+    proc0_grp = gbl_comm.group.Incl(list(range(0, gbl_ncsize, ncsize_run)))
+    proc0_comm = gbl_comm.Create(proc0_grp)
 
     # EnKF initialization
     nparam = 1  # Number of parameters to estimate
@@ -109,7 +124,7 @@ def main():
     # Frequency of observations (in number of time steps)
     fobs = 100
 
-    if rank == 0:
+    if gbl_rank == 0:
         # Reading pseudo-observations data (twin experiment)
         # Water depth | x-velocity | y-velocity
         Obs = np.loadtxt("ObsHUV.txt")
@@ -145,7 +160,7 @@ def main():
         tmp = np.zeros(nparam+1, dtype=int)
 
     # Transferring ndata and Ne
-    comm.Bcast(tmp, root=0)
+    gbl_comm.Bcast(tmp, root=0)
     ndata = tmp[0]
     Ne = tmp[1]
 
@@ -159,7 +174,7 @@ def main():
                   'f2d.slf': 'f2d_estimation.slf',
                   't2d.geo': 'geo_estimation.slf'}
     # Class Instantiation
-    study = ModelTelemac2D(studyFiles, fobs)
+    study = ModelTelemac2D(studyFiles, fobs, comm=comm)
 
     # States of each member
     State_Ensemble = np.zeros((Ne, 3, study.npoin))
@@ -169,12 +184,12 @@ def main():
     # Covariance for the initial draw
     P = np.diag([1])
     # Defining New ensemble on proc 0 and broadcasting it to the others
-    if rank == 0:
+    if gbl_rank == 0:
         # Draw
         Ensemble = np.random.multivariate_normal(mean=Param0, cov=P, size=Ne)
     else:
         Ensemble = np.zeros((Ne, nparam))
-    comm.Bcast(Ensemble, root=0)
+    gbl_comm.Bcast(Ensemble, root=0)
 
     # Covariance error on observations
     nobs = 3  # number of obs
@@ -186,9 +201,9 @@ def main():
     Q = np.diag([1.e-8])
     # Dimension of H.x operator
     nhx = 3
-    Y = np.zeros((Ne, nhx))  # HX
+    Y = np.zeros((Ne, nhx), 'd')  # HX
 
-    if rank == 0:
+    if gbl_rank == 0:
         # Save results in a list
         result_EnKF = []
     # Computational parameters
@@ -198,13 +213,20 @@ def main():
     # Data assimilation cycle loop
     while True:
         # Print the representative mean value of the Ensemble
-        if rank == 0:
+        if gbl_rank == 0:
             print(np.mean(Ensemble))
             # Save this value for the plotting of the convergence
             result_EnKF.append(np.mean(Ensemble))
 
+        my_ne = Ne//niter
         # Compute and save each member with Telemac run in parallel
-        for i in range(Ne):
+        Y[:,:] = 0.0
+        start = my_ne*color
+        end = my_ne*(color+1)
+        # Forcing last process to do the rest of the loop
+        if(color == (gbl_ncsize-1)//ncsize_run):
+            end = Ne
+        for i in range(start, end):
             new_state = study.Run(Ensemble[i][0], State_Ensemble[i])
             State_Ensemble[i, 0, :] = new_state[0]
             State_Ensemble[i, 1, :] = new_state[1]
@@ -217,10 +239,15 @@ def main():
             Y[i, 2] = study.t2d.get('MODEL.VELOCITYV', i=point_obs,
                                     global_num=True)
 
+        # All the proc 0 of each telemac run needs to merge their results
+        if rank == 0:
+            tmp = np.zeros_like(Y)
+            proc0_comm.Reduce(Y, tmp, op=MPI.SUM, root=0)
+
         # Terminate with ntps when no more observations
         ntps = k * fobs
-
-        if rank == 0:
+        if gbl_rank == 0:
+            Y = tmp
             # Noise of the model
             Ensemble[:, :] += multivariate_normal([0]*nparam, Q, Ne)
             # Mean of the model results
@@ -249,7 +276,7 @@ def main():
         else:
             Ensemble = np.zeros((Ne, nparam))
         # Broadcasting New ensemble to all processors
-        comm.Bcast(Ensemble, root=0)
+        gbl_comm.Bcast(Ensemble, root=0)
 
         # End of computation?
         if ntps < ndata:
@@ -257,7 +284,7 @@ def main():
         else:
             break
 
-    if rank == 0:
+    if gbl_rank == 0:
         # plot the convergence for the parameter (Strickler friction coef.)
         plt.plot(np.asarray(result_EnKF), label='EnKF convergence')
         plt.axhline(y=KsOPT, color='r', linestyle='-',
@@ -270,7 +297,7 @@ def main():
         plt.ylabel('Strickler coefficient m1/3/s')
         plt.show()
 
-    comm.Barrier()
+    gbl_comm.Barrier()
 
     # Ending
     del study.t2d
