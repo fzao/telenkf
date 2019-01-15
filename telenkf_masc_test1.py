@@ -68,7 +68,8 @@ class ModelMascaret1D(object):
         self.fobs = fobs
         # Number of 1D mesh nodes
         self.npoin = self.masc.get_var_size('Model.X')[0]
-        # Initialize Mascaret before the computations with pseudo-values (steady kernel)
+        # Initialize Mascaret before the computations with
+        # pseudo-values (steady kernel)
         self.masc.init_hydro([0.]*self.npoin, [0.]*self.npoin)
 
     def Run(self, K):
@@ -92,10 +93,11 @@ gbl_rank = gbl_comm.Get_rank()
 gbl_ncsize = gbl_comm.Get_size()
 ncsize_run = 1
 # Checking consitensy of parallel information
-if gbl_ncsize%ncsize_run != 0:
-    print("Number of cores for a telemac run must divide the total number of cores")
-    print("Total number of cores:",gbl_ncsize)
-    print("Telemac run number of cores:",ncsize_run)
+if gbl_ncsize % ncsize_run != 0:
+    print("Number of cores for a telemac run must divide the total number\
+           of cores")
+    print("Total number of cores:", gbl_ncsize)
+    print("Telemac run number of cores:", ncsize_run)
     raise ValueError
 # Creating local communicator
 color = gbl_rank//ncsize_run
@@ -160,9 +162,9 @@ HOMETEL = os.environ.get('HOMETEL')
 os.chdir(HOMETEL + '/examples/mascaret/Test1')
 
 #  Mascaret files
-files_name = ['sarap.xcas','geometrie','hydrogramme.loi',
-              'limnigramme.loi','mascaret0.lis','mascaret0.opt']
-files_type = ['xcas','geo','loi','loi','lis','res']
+files_name = ['sarap.xcas', 'geometrie', 'hydrogramme.loi',
+              'limnigramme.loi', 'mascaret0.lis', 'mascaret0.opt']
+files_type = ['xcas', 'geo', 'loi', 'loi', 'lis', 'res']
 studyFiles = [files_name, files_type]
 
 # Class Instantiation
@@ -179,25 +181,25 @@ else:
 gbl_comm.Bcast(Ensemble, root=0)
 
 # Twin experiments: compute one step with the optimal friction coefficient
-Zobs = study.Run(np.ones((1,1))*30.6)
+Zobs = study.Run(np.ones((1, 1)) * 30.6)
 
 # Error Statistics
 Err_EnKF = []
 # Covariances
 nobs = study.npoin
-R = np.diag([1.e-3] * nobs) # obs
-Q = np.diag([1.e-8]) # process
+R = np.diag([1.e-3] * nobs)  # obs
+Q = np.diag([1.e-8])  # process
 # Tables des resultats
 Param_Ensemble = np.zeros((Ne, nparam))
-Param_Ensemble[:,:] = Ensemble
+Param_Ensemble[:, :] = Ensemble
 nx = nobs
-Y = np.zeros((Ne, nx)) # HX
+Y = np.zeros((Ne, nx))  # HX
 # Loop
 k = 0
 if gbl_rank == 0:
     # Save results in a list
     result_EnKF = []
-while True: # time loop
+while True:  # time loop
     # Print the representative mean value of the Ensemble
     if gbl_rank == 0:
         print(np.mean(Ensemble))
@@ -205,7 +207,7 @@ while True: # time loop
         result_EnKF.append(np.mean(Ensemble))
     my_ne = Ne//niter
     # Compute and save each member with Telemac run in parallel
-    Y[:,:] = 0.0
+    Y[:, :] = 0.0
     start = my_ne*color
     end = my_ne*(color+1)
     # Forcing last process to do the rest of the loop
@@ -213,9 +215,9 @@ while True: # time loop
         end = Ne
     # For each member
     for i in range(start, end):
-        Param = Ensemble[i,]
+        Param = Ensemble[i, ]
         # HX operator
-        Y[i,] = study.Run(Param[0])
+        Y[i, ] = study.Run(Param[0])
     # All the proc 0 of each telemac run needs to merge their results
     if rank == 0:
         tmp = np.zeros_like(Y)
@@ -226,19 +228,19 @@ while True: # time loop
         # ajout du bruit de modele
         Ensemble[:, :] += multivariate_normal([0]*nparam, Q, Ne)
         # moyenne des resultats du modele
-        Paramoy = np.mean(Ensemble[:,:], axis=0)
+        Paramoy = np.mean(Ensemble[:, :], axis=0)
         # moyenne des observations
-        Ymoy = np.mean(Y[:,:], axis=0)
+        Ymoy = np.mean(Y[:, :], axis=0)
         # calcul de Pyy
         Pyy = 0
-        for y in Y[:,:]:
+        for y in Y[:, :]:
             e_yy = y - Ymoy
             Pyy += np.outer(e_yy, e_yy)
         Pyy = Pyy / (Ne-1) + R
         # calcul de Pxy
         Pxy = 0
         for i in range(Ne):
-            Pxy += np.outer(Ensemble[i,] - Paramoy, Y[i,] - Ymoy)
+            Pxy += np.outer(Ensemble[i, ] - Paramoy, Y[i, ] - Ymoy)
         Pxy /= (Ne-1)
         # le gain
         K = np.dot(Pxy, inv(Pyy))
@@ -246,7 +248,7 @@ while True: # time loop
         e_obs = multivariate_normal([0]*nobs, R, Ne)
         # mise a jour de l'ensemble
         for i in range(Ne):
-            Ensemble[i,] += np.dot(K, Zobs + e_obs[i,] - Y[i,])
+            Ensemble[i, ] += np.dot(K, Zobs + e_obs[i, ] - Y[i, ])
     else:
         Ensemble = np.zeros((Ne, nparam))
     # Broadcasting New ensemble to all processors
