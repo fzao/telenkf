@@ -189,18 +189,19 @@ Err_EnKF = []
 nobs = study.npoin
 R = np.diag([1.e-3] * nobs)  # obs
 Q = np.diag([1.e-8])  # process
-# Tables des resultats
+# Results for parameters
 Param_Ensemble = np.zeros((Ne, nparam))
 Param_Ensemble[:, :] = Ensemble
+# H.x operator
 nx = nobs
 Y = np.zeros((Ne, nx))  # HX
 # Loop
 k = 0
 if gbl_rank == 0:
-    # Save results in a list
+    # Save the global results in a list
     result_EnKF = []
 while True:  # time loop
-    # Print the representative mean value of the Ensemble
+    # Print the representative mean value of the Ensemble (global result)
     if gbl_rank == 0:
         print(np.mean(Ensemble))
         # Save this value for the plotting of the convergence
@@ -225,28 +226,28 @@ while True:  # time loop
 
     if gbl_rank == 0:
         Y = tmp
-        # ajout du bruit de modele
+        # Add process noise
         Ensemble[:, :] += multivariate_normal([0]*nparam, Q, Ne)
-        # moyenne des resultats du modele
+        # Mean of the results
         Paramoy = np.mean(Ensemble[:, :], axis=0)
-        # moyenne des observations
+        # Mean of the forced observations
         Ymoy = np.mean(Y[:, :], axis=0)
-        # calcul de Pyy
+        # Filterpy Pyy
         Pyy = 0
         for y in Y[:, :]:
             e_yy = y - Ymoy
             Pyy += np.outer(e_yy, e_yy)
         Pyy = Pyy / (Ne-1) + R
-        # calcul de Pxy
+        # Filterpy Pxy
         Pxy = 0
         for i in range(Ne):
             Pxy += np.outer(Ensemble[i, ] - Paramoy, Y[i, ] - Ymoy)
         Pxy /= (Ne-1)
-        # le gain
+        # Kalman gain
         K = np.dot(Pxy, inv(Pyy))
-        # erreur d'observation
+        # Observation errors
         e_obs = multivariate_normal([0]*nobs, R, Ne)
-        # mise a jour de l'ensemble
+        # Update the ensemble
         for i in range(Ne):
             Ensemble[i, ] += np.dot(K, Zobs + e_obs[i, ] - Y[i, ])
     else:
