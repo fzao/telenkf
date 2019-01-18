@@ -1,7 +1,7 @@
-Ensemble Kalman Filter Example for TELEMAC-MASCARET (with MPI)
-==============================================================
+Ensemble Kalman Filter Examples for TELEMAC-MASCARET (with MPI)
+===============================================================
 
-Ensemble Kalman Filtering example with the Telemac-Mascaret hydrodynamic code
+Ensemble Kalman Filtering examples with the Telemac-Mascaret hydrodynamic code
 
 Two examples:
 - Telemac 2D: a twin experiment based on the 'Estimation' test case where the goal is to estimate the bottom friction coefficient
