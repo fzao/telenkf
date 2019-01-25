@@ -51,6 +51,7 @@ from matplotlib import pyplot as plt
 from mpi4py import MPI
 from scipy.linalg import inv
 
+
 class ModelTelemac2D(object):
 
     def __init__(self, studyFiles, fobs, comm=MPI.COMM_SELF):
@@ -102,10 +103,11 @@ def main():
     gbl_ncsize = gbl_comm.Get_size()
     ncsize_run = 2
     # Checking consitensy of parallel information
-    if gbl_ncsize%ncsize_run != 0:
-        print("Number of cores for a telemac run must divide the total number of cores")
-        print("Total number of cores:",gbl_ncsize)
-        print("Telemac run number of cores:",ncsize_run)
+    if gbl_ncsize % ncsize_run != 0:
+        print("Number of cores for a telemac run must divide\
+               the total number of cores")
+        print("Total number of cores:", gbl_ncsize)
+        print("Telemac run number of cores:", ncsize_run)
         raise ValueError
     # Creating local communicator
     color = gbl_rank//ncsize_run
@@ -217,7 +219,7 @@ def main():
 
         my_ne = Ne//niter
         # Compute and save each member with Telemac run in parallel
-        Y[:,:] = 0.0
+        Y[:, :] = 0.0
         start = my_ne*color
         end = my_ne*(color+1)
         # Forcing last process to do the rest of the loop
