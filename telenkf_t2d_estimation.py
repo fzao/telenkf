@@ -112,7 +112,6 @@ def main():
     key = gbl_rank - (color*ncsize_run)
     comm = gbl_comm.Split(color, key)
     rank = comm.Get_rank()
-    ncsize = comm.Get_size()
     niter = gbl_ncsize//ncsize_run
     proc0_grp = gbl_comm.group.Incl(list(range(0, gbl_ncsize, ncsize_run)))
     proc0_comm = gbl_comm.Create(proc0_grp)
@@ -207,8 +206,6 @@ def main():
         # Save results in a list
         result_EnKF = []
     # Computational parameters
-    LT = 0
-    AT = 0.0
     k = 1
     # Data assimilation cycle loop
     while True:
