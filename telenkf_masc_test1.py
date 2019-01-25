@@ -50,7 +50,6 @@ from numpy.random import multivariate_normal
 from matplotlib import pyplot as plt
 from mpi4py import MPI
 from scipy.linalg import inv
-from matplotlib import pyplot as plt
 
 
 class ModelMascaret1D(object):
