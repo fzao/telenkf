@@ -59,4 +59,4 @@ Contributions
 
 Contributions are always welcome ;-)
 
-When contributing to please consider discussing the changes you wish to make via issue or e-mail to the maintainer.
+When contributing to telenkf please consider discussing the changes you wish to make via issue or e-mail to the maintainer.
