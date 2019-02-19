@@ -101,7 +101,8 @@ def main():
     gbl_comm = MPI.COMM_WORLD
     gbl_rank = gbl_comm.Get_rank()
     gbl_ncsize = gbl_comm.Get_size()
-    ncsize_run = 2
+    ncsize_run = 2  # two procs for the physics of Telemac are requested...
+    #  ...(one can change this)
     # Checking consitensy of parallel information
     if gbl_ncsize % ncsize_run != 0:
         print("Number of cores for a telemac run must divide\
