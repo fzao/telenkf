@@ -24,7 +24,7 @@ This Python script uses:
 Requirements
 ============
 
-- Python 3 (requires Telemac v8p0 or above)
+- Python 3 (requires Telemac v8p1r1 or above)
 - NumPy
 - Matplotlib
 - Mpi4py
