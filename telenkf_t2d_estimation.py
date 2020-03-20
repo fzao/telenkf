@@ -232,12 +232,9 @@ def main():
             State_Ensemble[i, 1, :] = new_state[1]
             State_Ensemble[i, 2, :] = new_state[2]
             # Save results using global numebring
-            Y[i, 0] = study.t2d.get('MODEL.WATERDEPTH', i=point_obs,
-                                    global_num=True)
-            Y[i, 1] = study.t2d.get('MODEL.VELOCITYU', i=point_obs,
-                                    global_num=True)
-            Y[i, 2] = study.t2d.get('MODEL.VELOCITYV', i=point_obs,
-                                    global_num=True)
+            Y[i, 0] = study.t2d.mpi_get('MODEL.WATERDEPTH', i=point_obs)
+            Y[i, 1] = study.t2d.mpi_get('MODEL.VELOCITYU', i=point_obs)
+            Y[i, 2] = study.t2d.mpi_get('MODEL.VELOCITYV', i=point_obs)
 
         # All the proc 0 of each telemac run needs to merge their results
         if rank == 0:
