@@ -41,7 +41,13 @@ This Python script uses:
 
 Author(s): Fabrice Zaoui, Yoann Audouin, Cedric Goeury
 
-Copyright (c) EDF 2018-2019
+To cite this work please use:
+    Fabrice Zaoui, Cédric Goeury, Yoann Audouin
+    Ensemble Integrations of Telemac-Mascaret for the Optimal Model Calibration
+    XXVth Telemac & Mascaret User Club, Oct 2018, Norwich, United Kingdom
+    https://hal.archives-ouvertes.fr/hal-01908756
+
+Copyright (c) EDF 2018-2021
 """
 from telapy.api.t2d import Telemac2d
 import os
@@ -79,7 +85,7 @@ class ModelTelemac2D(object):
         """
         HX operator
         """
-        # Set the new values for the friction parameter and for all the nodes
+        # Set the new values for the friction parameter and for all nodes
         K_array = np.ones(self.npoin) * K
         self.t2d.set_array('MODEL.CHESTR', K_array)
         # Set the correct initial state corresponding to a particular member
@@ -103,7 +109,7 @@ def main():
     gbl_ncsize = gbl_comm.Get_size()
     ncsize_run = 2  # two procs for the physics of Telemac are requested...
     #  ...(one can change this)
-    # Checking consitensy of parallel information
+    # Checking consistensy of parallel information
     if gbl_ncsize % ncsize_run != 0:
         print("Number of cores for a telemac run must divide\
                the total number of cores")
@@ -215,7 +221,7 @@ def main():
         # Print the representative mean value of the Ensemble
         if gbl_rank == 0:
             print(np.mean(Ensemble))
-            # Save this value for the plotting of the convergence
+            # Save this value for plotting the convergence
             result_EnKF.append(np.mean(Ensemble))
 
         my_ne = Ne//niter

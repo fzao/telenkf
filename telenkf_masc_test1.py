@@ -41,7 +41,13 @@ This Python script uses:
 
 Author(s): Fabrice Zaoui, Yoann Audouin, Cedric Goeury
 
-Copyright (c) EDF 2018-2019
+To cite this work please use:
+    Fabrice Zaoui, Cédric Goeury, Yoann Audouin
+    Ensemble Integrations of Telemac-Mascaret for the Optimal Model Calibration
+    XXVth Telemac & Mascaret User Club, Oct 2018, Norwich, United Kingdom
+    https://hal.archives-ouvertes.fr/hal-01908756
+
+Copyright (c) EDF 2018-2021
 """
 from telapy.api.masc import Mascaret
 import os
@@ -90,7 +96,7 @@ class ModelMascaret1D(object):
 gbl_comm = MPI.COMM_WORLD
 gbl_rank = gbl_comm.Get_rank()
 gbl_ncsize = gbl_comm.Get_size()
-ncsize_run = 1
+ncsize_run = 1  # only one processor is possible for Mascaret
 # Checking consitensy of parallel information
 if gbl_ncsize % ncsize_run != 0:
     print("Number of cores for a telemac run must divide the total number\
