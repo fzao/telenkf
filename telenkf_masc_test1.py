@@ -164,7 +164,7 @@ Na = tmp[1]
 # Changing of directory : 'examples' directory of the Telemac sources
 CURDIR = os.getcwd()
 HOMETEL = os.environ.get('HOMETEL')
-os.chdir(HOMETEL + '/examples/mascaret/Test1')
+os.chdir(HOMETEL + '/examples/mascaret/1_Steady_Kernel')
 
 #  Mascaret files
 files_name = ['sarap.xcas', 'geometrie', 'hydrogramme.loi',
